@@ -6,7 +6,7 @@
 /*   By: acousini <acousini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/14 18:14:13 by acousini          #+#    #+#             */
-/*   Updated: 2021/01/21 14:11:53 by acousini         ###   ########.fr       */
+/*   Updated: 2021/02/02 12:30:20 by acousini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char		*ft_replace(char *rem)
 		return (0);
 	while (rem[i] != '\n' && rem[i] != '\0')
 		i++;
-	if (!(copy = malloc(sizeof(char) * ((ft_strlen(rem) - i) + 1))))
+	if (!(copy = malloc(sizeof(char) * ((ft_strlen(rem) - i + 1)))))
 		return (0);
 	if (rem[i])
 		i++;
@@ -35,7 +35,7 @@ char		*ft_replace(char *rem)
 	return (copy);
 }
 
-char		*ft_goodline(char *rem)
+char		*ft_goodline(char *rem, char *buffer)
 {
 	char		*str;
 	size_t		i;
@@ -43,6 +43,7 @@ char		*ft_goodline(char *rem)
 
 	i = 0;
 	j = 0;
+	free(buffer);
 	if (!rem)
 		return (0);
 	while (rem[i] != '\n' && rem[i])
@@ -83,10 +84,13 @@ int			get_next_line(int fd, char **line)
 		}
 		rem[fd] = ft_strjoin(rem[fd], buffer, reader);
 	}
-	free(buffer);
-	*line = ft_goodline(rem[fd]);
+	*line = ft_goodline(rem[fd], buffer);
 	rem[fd] = ft_replace(rem[fd]);
 	if (reader == 0)
+	{
+		free(rem[fd]);
+		rem[fd] = 0;
 		return (0);
+	}
 	return (1);
 }
